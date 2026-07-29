@@ -1,0 +1,11 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" rx="40" fill="#EFF6FF"/>
+  <path d="M50 60C50 53.3726 55.3726 48 62 48H138C144.627 48 150 53.3726 150 60V140C150 146.627 144.627 152 138 152H62C55.3726 152 50 146.627 50 140V60Z" fill="#2563EB"/>
+  <path d="M73 79H127" stroke="white" stroke-width="10" stroke-linecap="round"/>
+  <path d="M73 101H127" stroke="white" stroke-width="10" stroke-linecap="round"/>
+  <path d="M73 123H103" stroke="white" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="136" cy="123" r="11" fill="#F59E0B"/>
+  <path d="M104 68H122C127.523 68 132 72.4772 132 78V78C132 83.5228 127.523 88 122 88H104V68Z" fill="#DBEAFE"/>
+  <path d="M82 68H64C58.4772 68 54 72.4772 54 78V78C54 83.5228 58.4772 88 64 88H82V68Z" fill="#DBEAFE"/>
+  <text x="100" y="170" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#1D4ED8">CDC</text>
+</svg>
