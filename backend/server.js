@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -63,6 +64,21 @@ app.use('/api/students', require('./routes/studentRoutes'));
 app.use('/api/jobs', require('./routes/jobRoutes'));
 app.use('/api/applications', require('./routes/applicationRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
+
+// ---------------------------------------------------------
+// Serve frontend in production from backend (single-image deploy)
+// If a `frontend/dist` build exists, serve it as static files and
+// fall back to index.html for client-side routing.
+// ---------------------------------------------------------
+if (process.env.NODE_ENV === 'production') {
+  const clientBuildPath = path.join(__dirname, 'frontend', 'dist');
+  if (fs.existsSync(clientBuildPath)) {
+    app.use(express.static(clientBuildPath));
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(clientBuildPath, 'index.html'));
+    });
+  }
+}
 
 // ---------------------------------------------------------
 // 404 + centralized error handler (must be last)

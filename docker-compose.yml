@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://mongo:27017/cdc
+      - JWT_SECRET=your_jwt_secret_here
+      - CLIENT_URL=http://localhost:5000
+    depends_on:
+      - mongo
+    volumes:
+      - ./backend/uploads:/app/backend/uploads
+
+volumes:
+  mongo-data:
