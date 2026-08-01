@@ -17,10 +17,29 @@ const { closeExpiredJobs } = require('./utils/jobStatus');
 
 const app = express();
 
+const parseAllowedOrigins = () => {
+  const configured = process.env.CLIENT_URL || 'http://localhost:5173';
+  return configured
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+};
+
+const assertRequiredEnv = () => {
+  if (process.env.NODE_ENV !== 'production') return;
+
+  const required = ['MONGO_URI', 'JWT_SECRET'];
+  const missing = required.filter((key) => !process.env[key]);
+
+  if (missing.length > 0) {
+    throw new Error(`Missing required environment variables in production: ${missing.join(', ')}`);
+  }
+};
+
 // ---------------------------------------------------------
 // Database
 // ---------------------------------------------------------
-connectDB();
+// Connected during startup to avoid serving traffic before DB is ready.
 
 // ---------------------------------------------------------
 // Core security & parsing middleware
@@ -28,7 +47,18 @@ connectDB();
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      const allowedOrigins = parseAllowedOrigins();
+
+      // Allow non-browser clients and same-origin requests with no Origin header.
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+
+      const corsError = new Error(`CORS blocked for origin: ${origin}`);
+      corsError.statusCode = 403;
+      return callback(corsError);
+    },
     credentials: true,
   })
 );
@@ -80,6 +110,13 @@ if (process.env.NODE_ENV === 'production') {
   }
 }
 
+// If root is requested and no client build is present, redirect to health
+app.get('/', (req, res) => {
+  const clientIndex = path.join(__dirname, 'frontend', 'dist', 'index.html');
+  if (fs.existsSync(clientIndex)) return res.sendFile(clientIndex);
+  return res.redirect('/api/health');
+});
+
 // ---------------------------------------------------------
 // 404 + centralized error handler (must be last)
 // ---------------------------------------------------------
@@ -105,8 +142,20 @@ cron.schedule('*/5 * * * *', async () => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`CDC Portal API listening on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
-});
+const startServer = async () => {
+  try {
+    assertRequiredEnv();
+    await connectDB();
+
+    app.listen(PORT, () => {
+      console.log(`CDC Portal API listening on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
+    });
+  } catch (err) {
+    console.error(`Failed to start server: ${err.message}`);
+    process.exit(1);
+  }
+};
+
+startServer();
 
 module.exports = app;

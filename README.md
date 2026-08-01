@@ -57,6 +57,30 @@ cp frontend/.env.example frontend/.env
 cp backend/.env.example backend/.env
 ```
 
+## Deploying Backend on Render
+
+Create a Render Web Service from this repository with the following settings:
+
+- Root Directory: `backend`
+- Build Command: `npm install`
+- Start Command: `npm start`
+- Runtime: Node 18+
+
+Set these environment variables in Render:
+
+- `NODE_ENV=production`
+- `MONGO_URI=<your_atlas_connection_string>`
+- `JWT_SECRET=<long_random_secret>`
+- `JWT_EXPIRES_IN=7d`
+- `CLIENT_URL=https://your-frontend.vercel.app`
+
+Notes:
+
+- If your MongoDB password contains special characters like `@`, `#`, or `%`, URL-encode it in `MONGO_URI`.
+- `CLIENT_URL` supports multiple comma-separated origins, for example:
+  `https://your-frontend.vercel.app,https://preview-123.vercel.app`
+- Health endpoint for Render checks: `/api/health`
+
 ## License
 
 This project is for educational and demonstration purposes.
