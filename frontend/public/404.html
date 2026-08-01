@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>CDC Placement Portal</title>
+    <script>
+      // GitHub Pages has no server-side router, so a hard refresh or direct
+      // link to a client-side route (e.g. /CDC-Project/admin/login) 404s.
+      // This encodes the intended path into a query string and redirects to
+      // index.html, which decodes it back on load. Standard SPA-on-Pages fix.
+      var basePath = '/CDC-Project/';
+      var path = window.location.pathname.slice(basePath.length);
+      var redirectUrl =
+        window.location.origin +
+        basePath +
+        '?redirect=' +
+        encodeURIComponent(path + window.location.search + window.location.hash);
+      window.location.replace(redirectUrl);
+    </script>
+  </head>
+  <body></body>
+</html>
