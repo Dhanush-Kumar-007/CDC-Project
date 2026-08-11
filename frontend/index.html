@@ -4,19 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CDC Placement Portal</title>
-    <script>
-      // Pairs with public/404.html: if we arrived here via the 404 redirect
-      // trick, restore the originally-requested path before the app mounts.
-      (function () {
-        var params = new URLSearchParams(window.location.search);
-        var redirect = params.get('redirect');
-        if (redirect) {
-          // When deployed on GitHub Pages the app lives under /CDC-Project/, otherwise it's at '/'
-          var basePath = import.meta.env.BASE_URL && import.meta.env.BASE_URL !== '/' ? import.meta.env.BASE_URL : '';
-          window.history.replaceState(null, '', basePath + redirect);
-        }
-      })();
-    </script>
+<!-- Redirect script removed for Vercel deployments to avoid infinite loops -->
   </head>
   <body>
     <div id="root"></div>
