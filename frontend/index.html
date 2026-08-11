@@ -11,7 +11,8 @@
         var params = new URLSearchParams(window.location.search);
         var redirect = params.get('redirect');
         if (redirect) {
-          var basePath = '/CDC-Project/';
+          // When deployed on GitHub Pages the app lives under /CDC-Project/, otherwise it's at '/'
+          var basePath = import.meta.env.BASE_URL && import.meta.env.BASE_URL !== '/' ? import.meta.env.BASE_URL : '';
           window.history.replaceState(null, '', basePath + redirect);
         }
       })();
