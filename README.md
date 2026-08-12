@@ -1,6 +1,6 @@
 # CDC Project
 
-Live demo: [CDC Project](https://dhanush-kumar-007.github.io/CDC-Portal/)
+Live demo: [CDC Project]([https://dhanush-kumar-007.github.io/CDC-Portal/](https://cdc-project-4agf.vercel.app/))
 
 CDC Project is a full-stack placement portal built for a college Career Development Center (CDC). It supports student registration, job postings, applications, department-based eligibility, and admin management workflows.
 
