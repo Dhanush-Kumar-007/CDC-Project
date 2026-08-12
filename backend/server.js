@@ -42,38 +42,42 @@ const assertRequiredEnv = () => {
 // Connected during startup to avoid serving traffic before DB is ready.
 
 // ---------------------------------------------------------
+/// ---------------------------------------------------------
 // Core security & parsing middleware
 // ---------------------------------------------------------
 app.use(helmet());
+
+const allowedOrigins = parseAllowedOrigins();
+
+console.log("CORS allowed origins:", allowedOrigins);
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowedOrigins = parseAllowedOrigins();
+      // Allow requests with no Origin header
+      if (!origin) {
+        return callback(null, true);
+      }
 
-      // Allow non-browser clients and same-origin requests with no Origin header.
-      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-      if (allowedOrigins.includes(origin)) return callback(null, true);
+      console.error("CORS blocked for origin:", origin);
+      console.error("Allowed origins are:", allowedOrigins);
 
       const corsError = new Error(`CORS blocked for origin: ${origin}`);
       corsError.statusCode = 403;
+
       return callback(corsError);
     },
     credentials: true,
   })
 );
-app.use(express.json({ limit: '2mb' }));
+
+app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(mongoSanitize()); // strips $ / . operators from user input to block NoSQL injection
-
-if (process.env.NODE_ENV !== 'production') {
-  app.use(morgan('dev'));
-}
-
-// ---------------------------------------------------------
-// Static file serving (resumes / logos)
-// Directly serving from disk for now — swap this for S3/Cloudinary
-// later without touching any controller logic.
+app.use(mongoSanitize());
 // ---------------------------------------------------------
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
