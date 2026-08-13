@@ -3,7 +3,7 @@ import axios from 'axios';
 const isLocalhost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
 const fallbackApiBaseUrl = isLocalhost
   ? 'http://localhost:5000/api'
-  : 'https://cdc-project-q4yr.onrender.com/api';
+  : 'https:/-q4yr.onrender.com/api';
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || fallbackApiBaseUrl,
